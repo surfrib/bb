@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página não encontrada (404) | Baby Bazaar</title>
+  <meta name="description" content="A página que procuras não existe ou foi movida. Vais ser reencaminhado para a página inicial do Baby Bazaar." />
+  <!-- Never index a 404: it must stay out of the search results -->
+  <meta name="robots" content="noindex, follow" />
+  <!-- Redireciona para a página inicial ao fim de 5 segundos -->
+  <meta http-equiv="refresh" content="5; url=/" />
+  <meta name="theme-color" content="#a85f65" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23a85f65'>✿</text></svg>" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">✿</span>
+        <span class="logo-text">Baby<strong>Bazaar</strong></span>
+      </a>
+      <nav class="main-nav">
+        <a href="/">Início</a>
+        <a href="/recem-nascido.html">Recém-Nascido</a>
+        <a href="/roupa-bebe.html">Roupa de Bebé</a>
+        <a href="/acessorios.html">Acessórios</a>
+        <a href="/blog.html">Blog</a>
+      </nav>
+      <button class="menu-toggle" aria-label="Menu" onclick="toggleMenu()">☰</button>
+    </div>
+    <nav class="mobile-nav" id="mobileNav">
+      <a href="/">Início</a>
+      <a href="/recem-nascido.html">Recém-Nascido</a>
+      <a href="/roupa-bebe.html">Roupa de Bebé</a>
+      <a href="/acessorios.html">Acessórios</a>
+      <a href="/blog.html">Blog</a>
+    </nav>
+  </header>
+
+  <section class="page-hero page-hero--rose">
+    <p class="hero-eyebrow">🍼 Erro 404</p>
+    <h1>Esta página foi trocar a fralda</h1>
+    <p>A página que procuras não existe ou mudou de sítio. Vamos levar-te de volta ao início dentro de <strong id="countdown">5</strong> segundos.</p>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <div class="tip-box">
+        <h3>💡 Ou escolhe já por onde queres continuar</h3>
+        <p>Se não quiseres esperar, segue directamente para uma das nossas secções.</p>
+      </div>
+
+      <div class="cat-grid">
+        <a href="/recem-nascido.html" class="cat-card cat-newborn">
+          <div class="cat-icon">🌸</div>
+          <h2>Recém-Nascido</h2>
+          <p>Enxoval completo para os primeiros dias</p>
+          <span class="cat-link">Ver tudo →</span>
+        </a>
+        <a href="/roupa-bebe.html" class="cat-card cat-clothing">
+          <div class="cat-icon">👕</div>
+          <h2>Roupa de Bebé</h2>
+          <p>Bodies, conjuntos, pijamas e muito mais</p>
+          <span class="cat-link">Ver tudo →</span>
+        </a>
+        <a href="/acessorios.html" class="cat-card cat-accessories">
+          <div class="cat-icon">🎀</div>
+          <h2>Acessórios</h2>
+          <p>Babetes, meias, tiaras e complementos</p>
+          <span class="cat-link">Ver tudo →</span>
+        </a>
+      </div>
+
+      <div class="section-cta">
+        <a href="/" class="btn btn-primary">Voltar à Página Inicial</a>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="/" class="logo"><span class="logo-icon">✿</span><span class="logo-text">Baby<strong>Bazaar</strong></span></a>
+          <p>O teu guia de confiança para as melhores escolhas de enxoval e roupa de bebé.</p>
+        </div>
+        <div class="footer-links">
+          <h5>Categorias</h5>
+          <a href="/recem-nascido.html">Recém-Nascido</a>
+          <a href="/roupa-bebe.html">Roupa de Bebé</a>
+          <a href="/acessorios.html">Acessórios</a>
+        </div>
+        <div class="footer-links">
+          <h5>Blog</h5>
+          <a href="/blog-lista-enxoval.html">Lista de Enxoval</a>
+          <a href="/blog-saco-dormir.html">Guia Sacos de Dormir</a>
+          <a href="/blog-marcas-organicas.html">Marcas de Roupa Orgânica</a>
+          <a href="/blog-presentes-nascimento.html">Presentes de Nascimento</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="affiliate-notice">⚠️ <strong>Aviso de afiliados:</strong> O Baby Bazaar participa no programa de afiliados da Amazon. Ao clicar nos links e efetuar uma compra, podemos receber uma pequena comissão, sem custo adicional para si.</p>
+        <p class="copyright">© 2026 BabyBazaar.pt — feito com ♡ para pais portugueses</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileNav').classList.toggle('open');
+    }
+
+    // Visible countdown. The meta refresh above is the actual redirect, so the
+    // page still works with JavaScript disabled.
+    (function () {
+      var el = document.getElementById('countdown');
+      var left = 5;
+      var timer = setInterval(function () {
+        left -= 1;
+        if (left <= 0) {
+          clearInterval(timer);
+          el.textContent = '0';
+          return;
+        }
+        el.textContent = String(left);
+      }, 1000);
+    })();
+  </script>
+  <!-- 100% privacy-first analytics -->
+<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+
+</body>
+</html>

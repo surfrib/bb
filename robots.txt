@@ -1,0 +1,6 @@
+# robots.txt — babybazaar.pt
+User-agent: *
+Allow: /
+Disallow: /cgi-bin/
+
+Sitemap: https://www.babybazaar.pt/sitemap.xml
