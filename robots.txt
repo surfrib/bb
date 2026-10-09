@@ -1,6 +1,14 @@
 # robots.txt — babybazaar.pt
+# Static site on GitHub Pages. Nothing here needs blocking: CSS, JS, fonts and
+# product images must stay crawlable or Google cannot render the pages.
+
 User-agent: *
 Allow: /
-Disallow: /cgi-bin/
+
+# AI and answer-engine crawlers are deliberately NOT blocked. A new pt-PT site
+# has little chance against the big retailers on commercial queries, so being
+# citable by ChatGPT Search, Perplexity and Google AI Overviews is part of the
+# plan. Do not add GPTBot / ClaudeBot / PerplexityBot / CCBot disallows unless
+# that strategy changes.
 
 Sitemap: https://www.babybazaar.pt/sitemap.xml
