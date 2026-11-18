@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio</title>
+<meta name="theme-color" content="#1F4FFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Portfolio">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --surface:#ffffff; --soft:#f1f4fb; --ink:#0b1b3a; --muted:#5b6b8c; --line:#e3e8f2;
+  --brand:#1f4fff; --on-brand:#ffffff; --hi:#ffd83d;
+  --up:#08894e; --down:#d92d3a; --accent:#1f4fff;
+  --font:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0a1020; --surface:#111a2e; --soft:#17213a; --ink:#eaf0ff; --muted:#8b9ac0; --line:#233052;
+    --brand:#2b55f5; --up:#2dd38c; --down:#ff6b72; --accent:#2b55f5; }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-variant-numeric:tabular-nums;
+  -webkit-text-size-adjust:100%;line-height:1.4;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 48px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+nav.tabs{display:flex;gap:4px;background:var(--brand);border-radius:12px;padding:4px;overflow-x:auto}
+nav.tabs button{font:inherit;font-weight:600;border:0;background:transparent;color:rgba(255,255,255,.82);padding:8px 16px;border-radius:9px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{background:var(--hi);color:#0b1b3a}
+nav.tabs button:focus-visible{outline:2px solid #fff;outline-offset:1px}
+.refresh:focus-visible,th button:focus-visible,input:focus-visible,.linkbtn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.status{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+.refresh{font:inherit;font-size:13px;font-weight:600;border:0;background:var(--brand);color:var(--on-brand);padding:8px 14px;border-radius:9px;cursor:pointer}
+.refresh[disabled]{opacity:.5;cursor:default}
+
+.hero{padding:8px 0 22px}
+.hero .label{color:var(--muted);font-size:14px;margin-bottom:4px}
+.hero .total{font-size:clamp(40px,8vw,72px);font-weight:700;letter-spacing:-.03em;line-height:1.02}
+.hero .sub{display:flex;flex-wrap:wrap;gap:6px 28px;margin-top:12px;font-size:16px}
+.hero .sub span small{display:block;color:var(--muted);font-size:12px;font-weight:400}
+.hero .sub span{font-weight:600}
+.up{color:var(--up)} .down{color:var(--down)}
+
+/* allocation strip: width = weight, tint = day change */
+.strip{display:flex;gap:3px;height:92px;margin:6px 0 28px}
+.tile{min-width:0;border-radius:8px;padding:8px 9px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.tile b{font-size:14px;font-weight:700;letter-spacing:.01em}
+.tile span{font-size:12px;font-weight:600;white-space:nowrap}
+.strip-note{color:var(--muted);font-size:12px;margin:-22px 0 26px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:11px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--surface);z-index:1}
+tbody tr:last-child td{border-bottom:0}
+th{font-weight:500;color:var(--muted);font-size:12.5px;padding:0;background:var(--surface)}
+th button{all:unset;box-sizing:border-box;cursor:pointer;display:block;width:100%;padding:11px 12px;text-align:inherit}
+th.sorted button{color:var(--ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--hi)}
+td.name small{display:block;color:var(--muted);font-size:12px}
+td.name b{font-weight:600}
+.range{display:inline-block;position:relative;width:70px;height:4px;border-radius:2px;background:var(--line);vertical-align:middle}
+.range i{position:absolute;top:-3px;width:3px;height:10px;border-radius:2px;background:var(--brand);transform:translateX(-1px)}
+
+h2{font-size:15px;font-weight:600;margin:32px 0 10px}
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.group{padding:14px 16px}
+.group .g-name{color:var(--muted);font-size:13px}
+.group .g-val{font-size:22px;font-weight:700;margin:2px 0}
+.group .g-gain{font-size:14px;font-weight:600}
+.fx{color:var(--muted);font-size:13px;margin-top:22px;display:flex;gap:18px;flex-wrap:wrap}
+
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-bottom:1px solid var(--line)}
+.toolbar input{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);width:min(320px,100%)}
+.toolbar span{color:var(--muted);font-size:13px;white-space:nowrap}
+td.l{text-align:left}
+
+
+.toolbar select{font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);max-width:160px}
+.toolbar select:focus-visible,.seg button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;font-weight:500;border:0;background:var(--soft);color:var(--muted);padding:8px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+.chk{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)}
+.setup{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+.setup input{flex:1 1 280px;font:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--soft);color:var(--ink)}
+.setup button{font:inherit;font-weight:600;font-size:14px;border:0;background:var(--brand);color:var(--on-brand);padding:10px 18px;border-radius:9px;cursor:pointer}
+.bad{color:var(--down);font-size:14px;margin:6px 0 0}
+.foot{margin-top:36px;color:var(--muted);font-size:13px;display:flex;gap:16px;flex-wrap:wrap}
+.linkbtn{all:unset;cursor:pointer;color:var(--brand);font-size:13px;font-weight:600}
+.msg{padding:28px 20px;text-align:left;max-width:640px}
+.msg h3{margin:0 0 6px;font-size:17px}
+.msg p{margin:6px 0;color:var(--muted);font-size:14px}
+.msg code{background:var(--soft);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--ink)}
+.skeleton{height:220px;border-radius:12px;background:linear-gradient(90deg,var(--line),transparent,var(--line));background-size:200% 100%;animation:sk 1.4s linear infinite}
+@keyframes sk{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.skeleton{animation:none}}
+@media (max-width:560px){.strip{height:76px}.tile span{display:none}.hero .sub{font-size:15px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Sheets"></nav>
+    <div class="status">
+      <span id="updated"></span>
+      <button class="refresh" id="refresh" type="button">Refresh</button>
+    </div>
+  </header>
+  <main id="view" aria-live="polite"></main>
+  <footer class="foot"><button class="linkbtn" id="change" type="button">Change sheet link</button><button class="linkbtn" id="forget" type="button">Clear saved data on this device</button></footer>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIG — edit this part only
+   1. In Google Sheets: File → Share → Publish to web → "Entire document"
+      (or each tab) → format "Comma-separated values (.csv)" → Publish.
+   2. Open the app and paste the published link when asked (stored in your browser only).
+   3. gid is the number after "gid=" in the browser URL when you open a tab.
+   type "portfolio" = holdings dashboard; "transactions" = buy/sell ledger; "table" = generic table.
+   ===================================================================== */
+// The sheet id is NOT stored here. You paste your published link once in the app and it is kept in this browser only.
+const TABS = [
+  { id: "portfolio-1",  name: "Portfolio 1",  gid: "0",  type: "portfolio" },
+  { id: "portfolio-2",  name: "Portfolio 2",  gid: "1286686281", type: "portfolio" },
+  { id: "transactions", name: "Transactions", gid: "322267596",  type: "transactions" }
+];
+const REFRESH_MS = 5 * 60 * 1000;
+const LOCALE = "pt-PT";
+/* ===================================================================== */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let PUB_ID = "";
+const csvUrl = t => `https://docs.google.com/spreadsheets/d/e/${PUB_ID}/pub?gid=${t.gid}&single=true&output=csv&_=${Date.now()}`;
+
+/* ---------- parsing ---------- */
+function parseCSV(text){
+  const rows=[]; let row=[], cell="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){
+      if(c==='"'){ if(text[i+1]==='"'){cell+='"';i++;} else q=false; }
+      else cell+=c;
+    } else if(c==='"') q=true;
+    else if(c===','){ row.push(cell); cell=""; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n') i++; row.push(cell); rows.push(row); row=[]; cell=""; }
+    else cell+=c;
+  }
+  if(cell!==""||row.length){ row.push(cell); rows.push(row); }
+  return rows;
+}
+// Handles "3 643,81 €", "(1,19)", "-0,74%", "1244,57%", "$1,0977"
+function num(s){
+  if(s==null) return null;
+  let t=String(s).replace(/[\s\u00a0\u202f]/g,"");
+  if(!t) return null;
+  let neg=false;
+  if(/^\(.*\)$/.test(t)){ neg=true; t=t.slice(1,-1); }
+  t=t.replace(/[€$%£]/g,"");
+  if(t.includes(",")&&t.includes(".")) t=t.replace(/\./g,"");
+  t=t.replace(",",".");
+  if(!/^[-+]?\d*\.?\d+$/.test(t)) return null;
+  const v=parseFloat(t);
+  return neg?-v:v;
+}
+const norm = s => String(s||"").trim().toLowerCase();
+function colIdx(headers,name,occ=0){
+  let n=0;
+  for(let i=0;i<headers.length;i++) if(norm(headers[i])===norm(name)){ if(n===occ) return i; n++; }
+  return -1;
+}
+
+/* ---------- formatting ---------- */
+const fEur=new Intl.NumberFormat(LOCALE,{style:"currency",currency:"EUR",useGrouping:"always"});
+const fEur0=new Intl.NumberFormat(LOCALE,{style:"currency",currency:"EUR",maximumFractionDigits:0,useGrouping:"always"});
+const fNum=new Intl.NumberFormat(LOCALE,{maximumFractionDigits:2,useGrouping:"always"});
+const eur=v=>v==null?"–":fEur.format(v);
+const eur0=v=>v==null?"–":fEur0.format(v);
+const sgnEur=v=>v==null?"–":(v>0?"+":"")+fEur.format(v);
+const pct=v=>v==null?"–":(v>0?"+":"")+fNum.format(v)+"%";
+const cls=v=>v==null||v===0?"":(v>0?"up":"down");
+
+/* ---------- portfolio model ---------- */
+function buildPortfolio(rows){
+  const H=rows[0]||[];
+  const c={
+    ticker:colIdx(H,"Ticker"), price:colIdx(H,"Price"), ccy:colIdx(H,"Currency"),
+    dayPct:colIdx(H,"Day Change %"), shares:colIdx(H,"Shares"), dayTotal:colIdx(H,"Day Change Total")>=0?colIdx(H,"Day Change Total"):colIdx(H,"Day Change",1),
+    value:colIdx(H,"Value (€uro)"),
+    cost:colIdx(H,"Cost basis €")>=0?colIdx(H,"Cost basis €"):colIdx(H,"Cost basis",1),
+    gainPct:colIdx(H,"Value gain",1), gainEur:colIdx(H,"Value Gain €uro"),
+    min:colIdx(H,"1Y MIN"), max:colIdx(H,"1Y MAX"), weight:colIdx(H,"Weight"),
+    div:colIdx(H,"Dividends"), totalDiv:colIdx(H,"Total with DIV"), totalPct:colIdx(H,"Total Gain")
+  };
+  if(c.ticker<0||c.value<0) throw new Error("Could not find the columns “Ticker” and “Value (€uro)” in this tab.");
+  const g=(r,k)=>c[k]>=0?num(r[c[k]]):null;
+
+  const holdings=[]; let lastHolding=1;
+  for(let i=2;i<rows.length;i++){
+    const r=rows[i]; const t=(r[c.ticker]||"").trim();
+    if(t && g(r,"value")!=null){
+      holdings.push({
+        name:(r[0]||"").trim(), ticker:t, ccy:(r[c.ccy]||"").trim(), price:g(r,"price"),
+        dayPct:g(r,"dayPct"), shares:g(r,"shares"), dayEur:g(r,"dayTotal"),
+        value:g(r,"value"), cost:g(r,"cost"), gainEur:g(r,"gainEur"), gainPct:g(r,"gainPct"),
+        min:g(r,"min"), max:g(r,"max"), weight:g(r,"weight"),
+        div:g(r,"div"), totalDiv:g(r,"totalDiv"), totalPct:g(r,"totalPct")
+      });
+      lastHolding=i;
+    }
+  }
+  const sum=k=>holdings.reduce((a,h)=>a+(h[k]||0),0);
+  const s=rows[1]||[];
+  const totals={
+    value:g(s,"value")??sum("value"),
+    cost:g(s,"cost")??sum("cost"),
+    gainEur:g(s,"gainEur")??sum("gainEur"),
+    gainPct:c.gainPct>=0?num(s[colIdx(H,"Value gain",1)]):null,
+    dayEur:sum("dayEur"),
+    totalDiv:g(s,"totalDiv"),
+    div:null
+  };
+  // dividends total sits on the first row after the holdings, in the Dividends column
+  for(let i=lastHolding+1;i<Math.min(rows.length,lastHolding+4);i++){
+    const v=c.div>=0?num(rows[i][c.div]):null;
+    if(v!=null){ totals.div=v; break; }
+  }
+  if(totals.div==null && c.div>=0) totals.div=sum("div");
+  holdings.forEach(h=>{ if(h.weight==null && totals.value) h.weight=h.value/totals.value*100; });
+  const prev=totals.value-totals.dayEur;
+  totals.dayPct=prev?totals.dayEur/prev*100:null;
+
+  const groups=[], fx=[];
+  for(let i=lastHolding+1;i<rows.length;i++){
+    const r=rows[i];
+    r.forEach((cell,j)=>{
+      if(/^(winners|etfs)$/i.test(cell.trim()) && c.value>=0){
+        groups.push({ name:cell.trim(), value:num(r[c.value]), cost:g(r,"cost"), gainEur:g(r,"gainEur"), gainPct:g(r,"gainPct") });
+      }
+    });
+    if(/^currency/i.test((r[0]||"").trim()) && (r[1]||"").trim()) fx.push({label:r[0].trim(), val:r[1].trim()});
+  }
+  return {holdings,totals,groups,fx,hasDiv:c.div>=0,hasRange:c.min>=0&&c.max>=0};
+}
+
+/* ---------- portfolio view ---------- */
+let sort={key:"value",dir:-1};
+function tintStyle(p){
+  if(p==null||Math.abs(p)<0.05) return "background:var(--soft);color:var(--ink)";
+  const a=Math.min(Math.abs(p)/3,1);
+  const hue=p>0?150:355;
+  const l=Math.round(68-a*30);              // 68% (small move) -> 38% (big move)
+  const sat=p>0?68:78;
+  return `background:hsl(${hue} ${sat}% ${l}%);color:${l<54?"#fff":"#0b1b3a"}`;
+}
+function renderPortfolio(m,el){
+  const {holdings:hs,totals:t}=m;
+  const tiles=hs.filter(h=>h.value>0).sort((a,b)=>b.value-a.value).map(h=>{
+    const w=h.weight!=null?h.weight:(h.value/t.value*100);
+    return `<div class="tile" style="flex:${Math.max(w,1.5)} 1 0;${tintStyle(h.dayPct)}" title="${esc(h.name)} · ${fNum.format(w)}% of portfolio">
+      <b>${esc(h.ticker)}</b><span>${fNum.format(w)}% · ${pct(h.dayPct)}</span></div>`;
+  }).join("");
+
+  const sub=[
+    `<span class="${cls(t.dayEur)}">${sgnEur(t.dayEur)} (${pct(t.dayPct)})<small>Today</small></span>`,
+    `<span class="${cls(t.gainEur)}">${sgnEur(t.gainEur)}${t.gainPct!=null?` (${pct(t.gainPct)})`:""}<small>Total gain</small></span>`,
+    `<span>${eur0(t.cost)}<small>Cost basis</small></span>`
+  ];
+  if(m.hasDiv && t.div!=null) sub.push(`<span>${eur(t.div)}<small>Dividends received</small></span>`);
+
+  const cols=[
+    {k:"name",l:"Holding",get:h=>h.name,str:true},
+    {k:"price",l:"Price",get:h=>h.price,fmt:h=>h.price==null?"–":`${fNum.format(h.price)} <small style="color:var(--muted)">${esc(h.ccy)}</small>`},
+    {k:"dayPct",l:"Today",get:h=>h.dayPct,fmt:h=>`<span class="${cls(h.dayPct)}">${pct(h.dayPct)}</span>`},
+    {k:"shares",l:"Shares",get:h=>h.shares,fmt:h=>h.shares==null?"–":fNum.format(h.shares)},
+    {k:"value",l:"Value",get:h=>h.value,fmt:h=>eur(h.value)},
+    {k:"weight",l:"Weight",get:h=>h.weight,fmt:h=>h.weight==null?"–":fNum.format(h.weight)+"%"},
+    {k:"cost",l:"Cost",get:h=>h.cost,fmt:h=>eur(h.cost)},
+    {k:"gainEur",l:"Gain",get:h=>h.gainEur,fmt:h=>`<span class="${cls(h.gainEur)}">${sgnEur(h.gainEur)}</span>`},
+    {k:"gainPct",l:"Gain %",get:h=>h.gainPct,fmt:h=>`<span class="${cls(h.gainPct)}">${pct(h.gainPct)}</span>`}
+  ];
+  if(m.hasDiv) cols.push({k:"div",l:"Dividends",get:h=>h.div,fmt:h=>h.div==null?"–":eur(h.div)});
+  if(m.hasRange) cols.push({k:"range",l:"1Y range",get:h=>(h.max>h.min&&h.price!=null)?(h.price-h.min)/(h.max-h.min):null,
+    fmt:h=>{ if(!(h.max>h.min)||h.price==null) return "–";
+      const p=Math.max(0,Math.min(1,(h.price-h.min)/(h.max-h.min)))*100;
+      return `<span class="range" title="${fNum.format(h.min)} – ${fNum.format(h.max)}"><i style="left:${p}%"></i></span>`; }});
+
+  const sc=cols.find(x=>x.k===sort.key)||cols[4];
+  const sorted=[...hs].sort((a,b)=>{
+    const x=sc.get(a), y=sc.get(b);
+    if(sc.str) return sort.dir*String(x).localeCompare(String(y));
+    return sort.dir*((x??-Infinity)-(y??-Infinity));
+  });
+  const head=cols.map(x=>`<th class="${x.k===sort.key?'sorted':''}" aria-sort="${x.k===sort.key?(sort.dir>0?'ascending':'descending'):'none'}"><button data-sort="${x.k}">${x.l}${x.k===sort.key?(sort.dir>0?' ↑':' ↓'):''}</button></th>`).join("");
+  const body=sorted.map(h=>"<tr>"+cols.map(x=>{
+    if(x.k==="name") return `<td class="name"><b>${esc(h.ticker)}</b><small>${esc(h.name)}</small></td>`;
+    return `<td>${x.fmt(h)}</td>`;
+  }).join("")+"</tr>").join("");
+
+  const groups=m.groups.length?`<h2>Groups</h2><div class="groups">${m.groups.map(gp=>`
+    <div class="card group"><div class="g-name">${esc(gp.name)}</div>
+    <div class="g-val">${eur0(gp.value)}</div>
+    <div class="g-gain ${cls(gp.gainEur)}">${sgnEur(gp.gainEur)}${gp.gainPct!=null?` (${pct(gp.gainPct)})`:""}</div></div>`).join("")}</div>`:"";
+  const fx=m.fx.length?`<div class="fx">${m.fx.map(f=>`<span>${esc(f.label)}: ${esc(f.val)}</span>`).join("")}</div>`:"";
+
+  el.innerHTML=`
+    <section class="hero">
+      <div class="label">Portfolio value</div>
+      <div class="total">${eur(t.value)}</div>
+      <div class="sub">${sub.join("")}</div>
+    </section>
+    <div class="strip" role="img" aria-label="Portfolio allocation by holding, tinted by today's change">${tiles}</div>
+    <div class="strip-note">Width is portfolio weight. Colour is today’s move.</div>
+    <div class="card tablewrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+    ${groups}${fx}`;
+  el.querySelectorAll("[data-sort]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.sort;
+    sort = sort.key===k ? {key:k,dir:-sort.dir} : {key:k,dir:k==="name"?1:-1};
+    renderPortfolio(m,el);
+  });
+}
+
+/* ---------- generic table view (transactions) ---------- */
+let tsort={col:-1,dir:1}, tquery="";
+function cellKey(s){
+  const n=num(s); if(n!=null) return n;
+  let m=String(s).trim().match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/);
+  if(m) return Date.UTC(+m[3],+m[2]-1,+m[1]);
+  m=String(s).trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return Date.UTC(+m[1],+m[2]-1,+m[3]);
+  return String(s).toLowerCase();
+}
+function renderTable(rows,el){
+  rows=rows.filter(r=>r.some(c=>c.trim()));
+  if(!rows.length){ el.innerHTML=`<div class="card msg"><h3>This tab is empty</h3></div>`; return; }
+  const head=rows[0], data=rows.slice(1);
+  const draw=()=>{
+    let d=data.filter(r=>!tquery||r.join(" ").toLowerCase().includes(tquery));
+    if(tsort.col>=0) d=[...d].sort((a,b)=>{
+      const x=cellKey(a[tsort.col]||""), y=cellKey(b[tsort.col]||"");
+      if(typeof x==="number"&&typeof y==="number") return tsort.dir*(x-y);
+      return tsort.dir*String(x).localeCompare(String(y));
+    });
+    el.querySelector("tbody").innerHTML=d.map(r=>"<tr>"+head.map((_,i)=>`<td class="${i===0?'':''}">${esc(r[i]||"")}</td>`).join("")+"</tr>").join("");
+    el.querySelector("#count").textContent=`${d.length} of ${data.length} rows`;
+  };
+  el.innerHTML=`<div class="card">
+    <div class="toolbar"><input id="q" type="search" placeholder="Search transactions" value="${esc(tquery)}" aria-label="Search transactions"><span id="count"></span></div>
+    <div class="tablewrap"><table><thead><tr>${head.map((h,i)=>`<th aria-sort="${tsort.col===i?(tsort.dir>0?'ascending':'descending'):'none'}"><button data-col="${i}" style="text-align:${i===0?'left':'right'}">${esc(h)||"&nbsp;"}${tsort.col===i?(tsort.dir>0?' ↑':' ↓'):''}</button></th>`).join("")}</tr></thead><tbody></tbody></table></div></div>`;
+  el.querySelector("#q").oninput=e=>{ tquery=e.target.value.toLowerCase(); draw(); };
+  el.querySelectorAll("[data-col]").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.col;
+    tsort = tsort.col===i ? {col:i,dir:-tsort.dir} : {col:i,dir:1};
+    renderTable(rows,el);
+  });
+  draw();
+}
+
+
+/* ---------- transactions view ---------- */
+const tx={view:"list",q:"",type:"",broker:"",ticker:"",openOnly:true,key:"date",dir:-1};
+function parseDate(s){
+  const m=String(s||"").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  return m?Date.UTC(+m[3],+m[2]-1,+m[1]):null;
+}
+const fDate=ts=>ts==null?"–":new Date(ts).toLocaleDateString(LOCALE,{day:"2-digit",month:"short",year:"numeric",timeZone:"UTC"});
+function buildTransactions(rows){
+  rows=rows.filter(r=>r.some(c=>c.trim()));
+  const H=rows[0]||[];
+  const c={ticker:colIdx(H,"Ticker"),name:colIdx(H,"Name"),type:colIdx(H,"Type"),price:colIdx(H,"Executed Price"),
+    date:colIdx(H,"Date"),shares:colIdx(H,"Nº of shares"),ccy:colIdx(H,"Currency"),total:colIdx(H,"Total (€)"),
+    fee:colIdx(H,"Commission (€)"),invested:colIdx(H,"Total Invested (€)"),broker:colIdx(H,"Broker")};
+  if(c.ticker<0||c.type<0||c.invested<0||c.date<0) throw new Error("not a transactions tab");
+  const v=(r,k)=>c[k]>=0?(r[c[k]]||"").trim():"";
+  return rows.slice(1).filter(r=>v(r,"ticker")).map(r=>({
+    ticker:v(r,"ticker"), name:/^#/.test(v(r,"name"))?"":v(r,"name"), type:v(r,"type").toUpperCase(),
+    price:num(v(r,"price")), priceRaw:v(r,"price"), date:parseDate(v(r,"date")), shares:num(v(r,"shares")),
+    ccy:v(r,"ccy"), total:num(v(r,"total")), fee:num(v(r,"fee"))||0, invested:num(v(r,"invested")), broker:v(r,"broker")
+  }));
+}
+function renderTransactions(rows,el){
+  const all=buildTransactions(rows);
+  const uniq=k=>[...new Set(all.map(t=>t[k]).filter(Boolean))].sort();
+  const names={}; all.forEach(t=>{ if(t.name&&!names[t.ticker]) names[t.ticker]=t.name; });
+  const opt=(arr,sel,label)=>`<option value="">${label}</option>`+arr.map(x=>`<option value="${esc(x)}"${x===sel?" selected":""}>${esc(x)}</option>`).join("");
+
+  let list=all.filter(t=>
+    (!tx.type||t.type===tx.type)&&(!tx.broker||t.broker===tx.broker)&&(!tx.ticker||t.ticker===tx.ticker)&&
+    (!tx.q||(t.ticker+" "+t.name+" "+t.broker+" "+t.type).toLowerCase().includes(tx.q)));
+
+  const buys=list.filter(t=>t.type==="BUY"), sells=list.filter(t=>t.type==="SELL");
+  const sum=(a,f)=>a.reduce((x,t)=>x+(f(t)||0),0);
+  const bought=sum(buys,t=>t.invested), sold=-sum(sells,t=>t.invested), fees=sum(list,t=>t.fee);
+  const cards=[["Bought",eur0(bought)],["Sold (after fees)",eur0(sold)],["Net invested",eur0(bought-sold)],["Fees paid",eur(fees)],["Transactions",String(list.length)]]
+    .map(([l,x])=>`<div class="card group"><div class="g-name">${l}</div><div class="g-val">${x}</div></div>`).join("");
+
+  let table;
+  if(tx.view==="list"){
+    const cols=[
+      {k:"date",l:"Date",get:t=>t.date,fmt:t=>fDate(t.date),left:true},
+      {k:"ticker",l:"Holding",get:t=>t.ticker,str:true,left:true,fmt:t=>`<b>${esc(t.ticker)}</b>${t.name?`<small style="display:block;color:var(--muted)">${esc(t.name)}</small>`:""}`},
+      {k:"type",l:"Type",get:t=>t.type,str:true,fmt:t=>`<span class="${t.type==="BUY"?"up":t.type==="SELL"?"down":""}">${esc(t.type)}</span>`},
+      {k:"shares",l:"Shares",get:t=>t.shares,fmt:t=>t.shares==null?"–":fNum.format(t.shares)},
+      {k:"price",l:"Price",get:t=>t.price,fmt:t=>t.price==null?esc(t.priceRaw||"–"):`${fNum.format(t.price)} <small style="color:var(--muted)">${esc(t.ccy)}</small>`},
+      {k:"invested",l:"Total (€)",get:t=>t.invested,fmt:t=>eur(t.invested)},
+      {k:"fee",l:"Fees",get:t=>t.fee,fmt:t=>t.fee?eur(t.fee):"–"},
+      {k:"broker",l:"Broker",get:t=>t.broker,str:true,fmt:t=>esc(t.broker)}
+    ];
+    const sc=cols.find(x=>x.k===tx.key)||cols[0];
+    list=[...list].sort((a,b)=>{
+      const x=sc.get(a), y=sc.get(b);
+      if(sc.str) return tx.dir*String(x).localeCompare(String(y));
+      return tx.dir*((x??-Infinity)-(y??-Infinity));
+    });
+    table=`<table><thead><tr>${cols.map(x=>`<th class="${x.k===tx.key?"sorted":""}" aria-sort="${x.k===tx.key?(tx.dir>0?"ascending":"descending"):"none"}"><button data-k="${x.k}" style="text-align:${x.left?"left":"right"}">${x.l}${x.k===tx.key?(tx.dir>0?" ↑":" ↓"):""}</button></th>`).join("")}</tr></thead>
+      <tbody>${list.map(t=>"<tr>"+cols.map(x=>`<td class="${x.left?"l":""}">${x.fmt(t)}</td>`).join("")+"</tr>").join("")}</tbody></table>`;
+  } else {
+    const g={};
+    list.forEach(t=>{
+      const o=g[t.ticker]||(g[t.ticker]={ticker:t.ticker,name:names[t.ticker]||"",buy:0,sell:0,shares:0,n:0,first:null,last:null});
+      o.n++; o.shares+=t.shares||0;
+      if(t.type==="BUY") o.buy+=t.invested||0; else if(t.type==="SELL") o.sell+=-(t.invested||0);
+      if(t.date!=null){ o.first=o.first==null?t.date:Math.min(o.first,t.date); o.last=o.last==null?t.date:Math.max(o.last,t.date); }
+    });
+    let gl=Object.values(g).map(o=>({...o,net:o.buy-o.sell}));
+    if(tx.openOnly) gl=gl.filter(o=>o.shares>0.0001);
+    const cols=[
+      {k:"ticker",l:"Holding",str:true,left:true,fmt:o=>`<b>${esc(o.ticker)}</b>${o.name?`<small style="display:block;color:var(--muted)">${esc(o.name)}</small>`:""}`},
+      {k:"shares",l:"Net shares",fmt:o=>fNum.format(o.shares)},
+      {k:"buy",l:"Bought (€)",fmt:o=>eur(o.buy)},
+      {k:"sell",l:"Sold (€)",fmt:o=>o.sell?eur(o.sell):"–"},
+      {k:"net",l:"Net invested (€)",fmt:o=>eur(o.net)},
+      {k:"n",l:"Trades",fmt:o=>o.n},
+      {k:"first",l:"First",fmt:o=>fDate(o.first)},
+      {k:"last",l:"Last",fmt:o=>fDate(o.last)}
+    ];
+    const key=cols.some(x=>x.k===tx.key)?tx.key:"net";
+    const sc=cols.find(x=>x.k===key);
+    gl.sort((a,b)=>sc.str?tx.dir*a.ticker.localeCompare(b.ticker):tx.dir*((a[key]??-Infinity)-(b[key]??-Infinity)));
+    list=gl;
+    table=`<table><thead><tr>${cols.map(x=>`<th class="${x.k===key?"sorted":""}"><button data-k="${x.k}" style="text-align:${x.left?"left":"right"}">${x.l}${x.k===key?(tx.dir>0?" ↑":" ↓"):""}</button></th>`).join("")}</tr></thead>
+      <tbody>${gl.map(o=>"<tr>"+cols.map(x=>`<td class="${x.left?"l":""}">${x.fmt(o)}</td>`).join("")+"</tr>").join("")}</tbody></table>`;
+  }
+
+  el.innerHTML=`
+    <div class="groups" style="margin-bottom:16px">${cards}</div>
+    <div class="card">
+      <div class="toolbar" style="flex-wrap:wrap;justify-content:flex-start">
+        <div class="seg" role="group" aria-label="View">
+          <button data-view="list" aria-pressed="${tx.view==="list"}">Transactions</button>
+          <button data-view="ticker" aria-pressed="${tx.view==="ticker"}">By holding</button>
+        </div>
+        <input id="q" type="search" placeholder="Search ticker, name, broker" value="${esc(tx.q)}" aria-label="Search">
+        <select id="f-type" aria-label="Type">${opt(["BUY","SELL"].filter(x=>uniq("type").includes(x)).concat(uniq("type").filter(x=>x!=="BUY"&&x!=="SELL")),tx.type,"All types")}</select>
+        <select id="f-broker" aria-label="Broker">${opt(uniq("broker"),tx.broker,"All brokers")}</select>
+        <select id="f-ticker" aria-label="Holding">${opt(uniq("ticker"),tx.ticker,"All holdings")}</select>
+        ${tx.view==="ticker"?`<label class="chk"><input type="checkbox" id="open" ${tx.openOnly?"checked":""}> Open positions only</label>`:""}
+        <span style="margin-left:auto">${list.length} ${tx.view==="list"?"rows":"holdings"}</span>
+      </div>
+      <div class="tablewrap">${table}</div>
+    </div>
+    ${tx.view==="ticker"?`<div class="strip-note" style="margin:10px 0 0">Net shares add up the Nº of shares column from this tab, including split rows, so check them against your broker if a number looks off.</div>`:""}`;
+
+  const redraw=()=>renderTransactions(rows,el);
+  el.querySelector("#q").oninput=e=>{ tx.q=e.target.value.toLowerCase(); const pos=e.target.selectionStart; redraw(); const q=el.querySelector("#q"); q.focus(); q.setSelectionRange(pos,pos); };
+  el.querySelector("#f-type").onchange=e=>{tx.type=e.target.value;redraw();};
+  el.querySelector("#f-broker").onchange=e=>{tx.broker=e.target.value;redraw();};
+  el.querySelector("#f-ticker").onchange=e=>{tx.ticker=e.target.value;redraw();};
+  const open=el.querySelector("#open"); if(open) open.onchange=e=>{tx.openOnly=e.target.checked;redraw();};
+  el.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{ tx.view=b.dataset.view; tx.key=tx.view==="list"?"date":"net"; tx.dir=-1; redraw(); });
+  el.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k; const strCol=["ticker","type","broker"].includes(k);
+    if(tx.key===k) tx.dir=-tx.dir; else { tx.key=k; tx.dir=strCol?1:-1; }
+    redraw();
+  });
+}
+
+/* ---------- app shell ---------- */
+const store={
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+function parseSheetId(input){
+  const t=String(input||"").trim();
+  const m=t.match(/\/d\/e\/([A-Za-z0-9_-]+)/);
+  if(m) return m[1];
+  return /^2PACX-[A-Za-z0-9_-]{20,}$/.test(t)?t:null;
+}
+PUB_ID=store.get("pv:id")||"";
+
+const cache={};  // tabId -> {rows, at}   (memory)
+const rowsKey=t=>`pv:rows:${PUB_ID.slice(-10)}:${t.id}`;
+function readSaved(t){
+  const raw=store.get(rowsKey(t)); if(!raw) return null;
+  try{ const o=JSON.parse(raw); return Array.isArray(o.rows)?o:null; }catch(e){ return null; }
+}
+function writeSaved(t,o){ store.set(rowsKey(t),JSON.stringify(o)); }
+
+let current=(location.hash||"").slice(1);
+if(!TABS.some(t=>t.id===current)) current=TABS[0].id;
+
+function renderTabs(){
+  $("#tabs").innerHTML=TABS.map(t=>`<button role="tab" data-id="${t.id}" aria-selected="${t.id===current}">${esc(t.name)}</button>`).join("");
+  $("#tabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{ current=b.dataset.id; history.replaceState(null,"","#"+current); renderTabs(); load(false); });
+}
+function stamp(at,saved){
+  $("#updated").textContent=at?(saved?"Saved ":"Updated ")+new Date(at).toLocaleTimeString(LOCALE,{hour:"2-digit",minute:"2-digit"}):"";
+}
+function show(tab,rows){
+  const el=$("#view");
+  try{
+    if(tab.type==="portfolio") renderPortfolio(buildPortfolio(rows),el);
+    else if(tab.type==="transactions"){ try{ renderTransactions(rows,el); }catch(e){ renderTable(rows,el); } }
+    else renderTable(rows,el);
+  }catch(e){ error(e.message); }
+}
+function error(msg,hint){
+  $("#view").innerHTML=`<div class="card msg"><h3>Couldn’t show this sheet</h3><p>${esc(msg)}</p>${hint||""}</div>`;
+}
+function showSetup(problem){
+  stamp(null);
+  $("#view").innerHTML=`<div class="card msg">
+    <h3>Connect your Google Sheet</h3>
+    <p>In Google Sheets choose File → Share → Publish to web. Pick <b>Entire document</b> and <b>CSV</b>, publish, then paste the link here.</p>
+    <p>The link is saved only in this browser. It is not part of the code, so the repository can stay public.</p>
+    <div class="setup"><input id="sheet-link" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://docs.google.com/spreadsheets/d/e/2PACX-…/pub?output=csv" aria-label="Published sheet link"><button id="sheet-save" type="button">Save and load</button></div>
+    ${problem?`<p class="bad">${esc(problem)}</p>`:""}</div>`;
+  const go=()=>{
+    const id=parseSheetId($("#sheet-link").value);
+    if(!id){ showSetup("That doesn’t look like a published sheet link. It should contain /d/e/2PACX-…"); return; }
+    PUB_ID=id; store.set("pv:id",id);
+    Object.keys(cache).forEach(k=>delete cache[k]);
+    load(true);
+  };
+  $("#sheet-save").onclick=go;
+  $("#sheet-link").onkeydown=e=>{ if(e.key==="Enter") go(); };
+}
+async function load(force){
+  if(!PUB_ID){ showSetup(); return; }
+  const tab=TABS.find(t=>t.id===current);
+  if(!tab.gid && tab.gid!=="0"){
+    error(`No gid set for “${tab.name}”.`,`<p>Open that tab in Google Sheets, copy the number after <code>gid=</code> in the address bar, and paste it into the <code>TABS</code> list at the top of the script in <code>index.html</code>.</p>`);
+    stamp(null); return;
+  }
+  let hit=cache[tab.id];
+  let fromSaved=false;
+  if(!hit){ hit=readSaved(tab); fromSaved=!!hit; if(hit) cache[tab.id]=hit; }
+  if(hit&&!force){ show(tab,hit.rows); stamp(hit.at,fromSaved); }
+  else if(!hit) $("#view").innerHTML=`<div class="skeleton"></div>`;
+  $("#refresh").disabled=true;
+  try{
+    const res=await fetch(csvUrl(tab));  // no custom headers: keeps it a "simple" CORS request (no preflight)
+    if(!res.ok) throw new Error(`Google returned ${res.status}.`);
+    const rows=parseCSV(await res.text());
+    const fresh={rows,at:Date.now()};
+    cache[tab.id]=fresh; writeSaved(tab,fresh);
+    if(tab.id===current){ show(tab,rows); stamp(fresh.at,false); }
+  }catch(e){
+    console.error("Sheet fetch failed:",e);
+    if(!hit) error(e.message||"Network error.",
+      (location.protocol==="file:"?`<p>You opened the file directly from disk. Browsers often block that. Serve it over http instead, e.g. run <code>python3 -m http.server</code> in the folder and open <code>http://localhost:8000</code>, or deploy to GitHub Pages.</p>`:"")+
+      `<p>Open this address in a new tab. If it downloads or shows CSV text, the sheet is fine: <a href="${esc(csvUrl(tab))}" target="_blank" rel="noopener">test link</a>. If it shows an error page, check File → Share → Publish to web (Entire document, CSV), the pasted link and the <code>gid</code>. Content blockers can also stop the request. You can fix the link with “Change sheet link” below.</p>`);
+    else { show(tab,hit.rows); $("#updated").textContent="Offline. Showing saved data from "+new Date(hit.at).toLocaleTimeString(LOCALE,{hour:"2-digit",minute:"2-digit"}); }
+  }finally{ $("#refresh").disabled=false; }
+}
+$("#refresh").onclick=()=>load(true);
+$("#change").onclick=()=>showSetup();
+$("#forget").onclick=()=>{
+  try{ Object.keys(localStorage).filter(k=>k.startsWith("pv:")).forEach(k=>localStorage.removeItem(k)); }catch(e){}
+  PUB_ID=""; Object.keys(cache).forEach(k=>delete cache[k]); showSetup();
+};
+setInterval(()=>{ if(!document.hidden&&PUB_ID) load(true); },REFRESH_MS);
+document.addEventListener("visibilitychange",()=>{
+  const c=cache[current]; if(!document.hidden && PUB_ID && (!c||Date.now()-c.at>REFRESH_MS)) load(true);
+});
+if("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register("sw.js").catch(()=>{});
+renderTabs(); load(false);
+</script>
+</body>
+</html>
